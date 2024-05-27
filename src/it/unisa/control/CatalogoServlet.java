@@ -31,6 +31,19 @@ public class CatalogoServlet extends HttpServlet {
 		try {
 			if(action!=null) {
 				if(action.equalsIgnoreCase("add")) {
+					boolean ok = !request.getParameter("nome").matches(".*[%<>&;'\0-].*")
+							  && !request.getParameter("descrizione").matches(".*[%<>&;'\0-].*")
+							  && !request.getParameter("iva").matches(".*[%<>&;'\0-].*")
+							  && !request.getParameter("prezzo").matches(".*[%<>&;'\0-].*")
+							  && !request.getParameter("quantità").matches(".*[%<>&;'\0-].*")
+							  && !request.getParameter("piattaforma").matches(".*[%<>&;'\0-].*")
+							  && !request.getParameter("genere").matches(".*[%<>&;'\0-].*")
+							  && !request.getParameter("dataUscita").matches(".*[%<>&;'\0-].*")
+							  && !request.getParameter("descDett").matches(".*[%<>&;'\0-].*");
+					if (!ok) {
+						response.sendRedirect(request.getContextPath() + "/" +redirectedPage);
+						return;
+					}
 					bean.setNome(request.getParameter("nome"));
 					bean.setDescrizione(request.getParameter("descrizione"));
 					bean.setIva(request.getParameter("iva"));
