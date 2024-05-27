@@ -1,6 +1,9 @@
 package it.unisa.control;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -28,17 +31,28 @@ public class RegistrazioneServlet extends HttpServlet {
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
+		String pwd = request.getParameter("pw");
+		try {
+			MessageDigest digest = MessageDigest.getInstance("SHA-512");
+			byte[] encodedhash = digest.digest(
+					pwd.getBytes(StandardCharsets.UTF_8));	
+			pwd = new String(encodedhash, StandardCharsets.UTF_8);
+		} catch(NoSuchAlgorithmException e) {
+			response.sendRedirect(request.getContextPath() + "/Home.jsp");
+		}
+		
 		UserDao dao = new UserDao();
 		String nome = request.getParameter("nome");
 		String cognome = request.getParameter("cognome");
 		String email = request.getParameter("email");
 		String dataNascita = request.getParameter("nascita");
 		String username = request.getParameter("us");
-		String pwd = request.getParameter("pw");
 
         String[] parti = dataNascita.split("-");
         dataNascita = parti[2] + "-" + parti[1] + "-" + parti[0];
 		
+        
+        
 		try {
 			
 			UserBean user = new UserBean();
